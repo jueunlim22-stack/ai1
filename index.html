@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연애 스타일 테스트</title>
+<style>
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #e6f0ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #ff80ab;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ff4081;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2 id="question">연애 스타일 테스트 시작!</h2>
+  <div id="answers"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "데이트 계획은 어떻게 하는 편이야?",
+    a: [
+      { text: "완벽하게 계획한다", type: "planner" },
+      { text: "대충 정하고 즉흥적으로", type: "free" }
+    ]
+  },
+  {
+    q: "연인이 연락이 늦으면?",
+    a: [
+      { text: "걱정되고 서운하다", type: "emotional" },
+      { text: "그럴 수도 있지", type: "cool" }
+    ]
+  },
+  {
+    q: "연애에서 중요한 건?",
+    a: [
+      { text: "안정감", type: "stable" },
+      { text: "설렘", type: "passion" }
+    ]
+  },
+  {
+    q: "싸웠을 때 나는?",
+    a: [
+      { text: "바로 풀고 싶다", type: "direct" },
+      { text: "시간이 필요하다", type: "calm" }
+    ]
+  },
+  {
+    q: "연애 스타일은?",
+    a: [
+      { text: "상대에게 집중", type: "devoted" },
+      { text: "내 삶도 중요", type: "independent" }
+    ]
+  }
+];
+
+let current = 0;
+let scores = {};
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById("question").innerText = q.q;
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  q.a.forEach(ans => {
+    const btn = document.createElement("button");
+    btn.innerText = ans.text;
+    btn.onclick = () => {
+      scores[ans.type] = (scores[ans.type] || 0) + 1;
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    };
+    answersDiv.appendChild(btn);
+  });
+}
+
+function showResult() {
+  let result = "";
+  let match = "";
+
+  if ((scores.devoted || 0) > 0 && (scores.emotional || 0) > 0) {
+    result = "헌신형 연애 스타일 💖";
+    match = "차분하고 안정적인 사람";
+  } else if ((scores.independent || 0) > 0 && (scores.cool || 0) > 0) {
+    result = "자유로운 연애 스타일 🌿";
+    match = "서로 존중하는 독립적인 사람";
+  } else if ((scores.planner || 0) > 0 && (scores.stable || 0) > 0) {
+    result = "안정 추구형 🏡";
+    match = "신뢰감 높은 성실한 사람";
+  } else {
+    result = "열정적인 연애 스타일 🔥";
+    match = "감정 표현이 풍부한 사람";
+  }
+
+  document.getElementById("question").innerHTML = `\n    당신의 연애 스타일은 <br><br><b>${result}</b><br><br>\n    💡 잘 맞는 스타일: ${match}\n  `;
+  document.getElementById("answers").innerHTML = "<button onclick='restart()'>다시하기</button>";
+}
+
+function restart() {
+  current = 0;
+  scores = {};
+  showQuestion();
+}
+
+showQuestion();
+</script>
+</body>
+</html>
